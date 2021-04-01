@@ -1,5 +1,0 @@
-62a31eabe1af4f589432d09c535bde6a|Assets/ImageLibrary/Cow.png|0.1
-34176600af29466285f39b8123937101|Assets/ImageLibrary/Bear.png|0.1
-e8bb981fe063490d9532ca2099ee6e85|Assets/ImageLibrary/Deer.png|0.1
-d846af4c402c4708a289a4c53f501f00|Assets/ImageLibrary/Lion.png|0.1
-082d951188c64d15856241a5794f28a6|Assets/ImageLibrary/Zebra.png|0.1

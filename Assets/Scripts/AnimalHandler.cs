@@ -8,9 +8,10 @@ public class AnimalHandler : MonoBehaviour
 {
     public AnimalData animalData;    
 
-    //public event EventHandler<OnAttackEventArgs> OnAttack;
     [SerializeField]
     private AnimalHandler targetEnemy;
+
+    private AttachUIElements uiElement;
 
     private Text nameText;
     private Text healthText;
@@ -58,7 +59,6 @@ public class AnimalHandler : MonoBehaviour
             //Debug.Log("timer:  " + timer);
             if (timer > timerInterval)
             {
-                Debug.Log("timer triggered");
                 timer -= timerInterval;
                 //invoke attack event
                 EventManager.current.InvokeAttack(this, new EventManager.OnAttackEventArgs { attackedName = targetEnemy.name, attackerName = this.name, damageDealt = this.attack });
@@ -69,38 +69,41 @@ public class AnimalHandler : MonoBehaviour
         {
             timer = 0f;
         }
+
+        if (uiElement == null)
+        {
+            uiElement = this.transform.root.gameObject.GetComponentInChildren<AttachUIElements>();
+            uiElement.UpdateText(health.ToString() + "/" + maxHealth.ToString());
+        }
     }
 
+    //triggers to check if enemy is nearby or not
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("I " + this.animalData.name + " have ecountered: " + other.name);
+        //Debug.Log("I " + this.animalData.name + " have ecountered: " + other.name);
         if (targetEnemy == null)
         {
             var otherAnimal = other.gameObject.GetComponent<AnimalHandler>();
             if (otherAnimal != null)
             {
-                Debug.Log("I " + this.animalData.name + " see other creature: " + other.name + " is animal");
+                //Debug.Log("I " + this.animalData.name + " see other creature: " + other.name + " is animal");
                 targetEnemy = otherAnimal;
-                //add other animals attacked function to event (this is bad behaviour)
-                //OnAttack += otherAnimal.AnimalHandler_OnAttacked;
             }
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (timer == 0f)
+        if (timer == 0f && targetEnemy == null)
         {
-            Debug.Log("I " + this.animalData.name + " have changed target to: " + other.name);
+            //Debug.Log("I " + this.animalData.name + " have changed target to: " + other.name);
             if (targetEnemy == null)
             {
                 var otherAnimal = other.gameObject.GetComponent<AnimalHandler>();
                 if (otherAnimal != null)
                 {
-                    Debug.Log("I " + this.animalData.name + " see other creature: " + other.name + " is animal");
+                    //Debug.Log("I " + this.animalData.name + " see other creature: " + other.name + " is animal");
                     targetEnemy = otherAnimal;
-                    //add other animals attacked function to event (this is bad behaviour)
-                    //OnAttack += otherAnimal.AnimalHandler_OnAttacked;
                 }
             }
         }
@@ -108,40 +111,32 @@ public class AnimalHandler : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("I " + this.animalData.name + " have lost sight of: " + other.name);
+        //Debug.Log("I " + this.animalData.name + " have lost sight of: " + other.name);
         if (targetEnemy != null)
         {
             var otherAnimal = other.gameObject.GetComponent<AnimalHandler>();
             if (otherAnimal == targetEnemy)
             {
-                Debug.Log("I " + this.animalData.name + " will stop fighting other creature: " + other.name);
+                //Debug.Log("I " + this.animalData.name + " will stop fighting other creature: " + other.name);
                 targetEnemy = null;
-                //add other animals attacked function to event (this is bad behaviour)
-                //OnAttack += otherAnimal.AnimalHandler_OnAttacked;
             }
         }
     }
 
-    /*
-    private void AnimalHandler_OnAttacked(object sender, OnAttackEventArgs e)
-    {
-        TakeDamage(e.damageDealt);
-        if (health <= 0)
-        {
-            var aHandler = (AnimalHandler)sender;
-            //attempt to unsubscribe from event (this doesn't go so well either)
-            //OnAttack -= aHandler.AnimalHandler_OnAttacked;
-            Deadded();
-        }
-    }
-    */
 
     private void TakeDamage(int damage)
     {
         //reduce damage done by armor amount, to a minimum of 1
         health -= (1 <= (damage - armor)) ? (damage - armor) : 1;
 
-        Debug.Log("I " + this.animalData.name + " have taken damage. Current health: " + health);
+        if (uiElement == null)
+        {
+            uiElement = this.transform.root.gameObject.GetComponentInChildren<AttachUIElements>();
+        }
+
+        uiElement.UpdateText(health.ToString() + "/" + maxHealth.ToString());
+
+        //Debug.Log("I " + this.animalData.name + " have taken damage. Current health: " + health);
 
         //check if dead
         if (health <= 0)
@@ -157,16 +152,10 @@ public class AnimalHandler : MonoBehaviour
     private void Deadded()
     {
         EventManager.current.OnAttack -= Current_OnAttack;
-        Debug.Log("I " + this.animalData.name + " have died: " + health);
+        //Debug.Log("I " + this.animalData.name + " have died: " + health);
         targetEnemy = null;
         //do death animation
         Destroy(this.transform.root.gameObject);
     }
 
-    /*
-    public class OnAttackEventArgs : EventArgs
-    {
-        public int damageDealt;
-    }
-    */
 }

@@ -19,6 +19,7 @@ public class ImageRecognitionBehaviour : MonoBehaviour
     {
         arTrackedImageManager = FindObjectOfType<ARTrackedImageManager>();
         aRSessionOrigin = FindObjectOfType<ARSessionOrigin>();
+
     }
 
     public void OnEnable()
@@ -39,7 +40,7 @@ public class ImageRecognitionBehaviour : MonoBehaviour
         {
             foreach (var creature in arCreaturesToPlace)
             {
-                Debug.Log("DEBUG: Found: " + creature.name);
+                //Debug.Log("//Debug: Found: " + creature.name);
                 var animalHandler = creature.GetComponent<AnimalHandler>();
                 if (animalHandler != null)
                 {
@@ -51,10 +52,12 @@ public class ImageRecognitionBehaviour : MonoBehaviour
                         imageObjects.Add(animalHandler.animalData.imageName, newObject);
                     }
                 }
+                /*
                 else if(Debug.isDebugBuild)
                 {
-                    Debug.Log("DEBUG: Object doesn't have Animal Handler Component");
+                    Debug.Log("//Debug: Object doesn't have Animal Handler Component");
                 }
+                */
             }
         }
 
