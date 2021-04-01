@@ -16,5 +16,5 @@ MonoBehaviour:
   imageName: Lion
   attack: 5
   health: 5
-  armor: 0
-  speed: 3
+  armor: 1
+  speed: 5

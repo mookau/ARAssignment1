@@ -17,4 +17,4 @@ MonoBehaviour:
   attack: 1
   health: 3
   armor: 0
-  speed: 10
+  speed: 15

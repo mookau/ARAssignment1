@@ -67,7 +67,7 @@ public class AnimalHandler : MonoBehaviour
         }
         else
         {
-
+            timer = 0f;
         }
     }
 
@@ -83,6 +83,25 @@ public class AnimalHandler : MonoBehaviour
                 targetEnemy = otherAnimal;
                 //add other animals attacked function to event (this is bad behaviour)
                 //OnAttack += otherAnimal.AnimalHandler_OnAttacked;
+            }
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (timer == 0f)
+        {
+            Debug.Log("I " + this.animalData.name + " have changed target to: " + other.name);
+            if (targetEnemy == null)
+            {
+                var otherAnimal = other.gameObject.GetComponent<AnimalHandler>();
+                if (otherAnimal != null)
+                {
+                    Debug.Log("I " + this.animalData.name + " see other creature: " + other.name + " is animal");
+                    targetEnemy = otherAnimal;
+                    //add other animals attacked function to event (this is bad behaviour)
+                    //OnAttack += otherAnimal.AnimalHandler_OnAttacked;
+                }
             }
         }
     }
@@ -119,8 +138,8 @@ public class AnimalHandler : MonoBehaviour
 
     private void TakeDamage(int damage)
     {
-        //reduce damage done by armor amount
-        health -= (damage - armor);
+        //reduce damage done by armor amount, to a minimum of 1
+        health -= (1 <= (damage - armor)) ? (damage - armor) : 1;
 
         Debug.Log("I " + this.animalData.name + " have taken damage. Current health: " + health);
 
@@ -137,6 +156,7 @@ public class AnimalHandler : MonoBehaviour
 
     private void Deadded()
     {
+        EventManager.current.OnAttack -= Current_OnAttack;
         Debug.Log("I " + this.animalData.name + " have died: " + health);
         targetEnemy = null;
         //do death animation

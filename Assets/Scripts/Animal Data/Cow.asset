@@ -16,5 +16,5 @@ MonoBehaviour:
   imageName: Cow
   attack: 1
   health: 10
-  armor: 1
+  armor: 2
   speed: 1
