@@ -11,7 +11,11 @@ public class AnimalHandler : MonoBehaviour
     [SerializeField]
     private AnimalHandler targetEnemy;
 
+    private Animator animator;
+
     private AttachUIElements uiElement;
+
+    private bool destroyMe = false;
 
     private Text nameText;
     private Text healthText;
@@ -34,6 +38,8 @@ public class AnimalHandler : MonoBehaviour
         armor = animalData.armor;
         speed = animalData.speed;
         targetEnemy = null;
+
+        animator = gameObject.GetComponent<Animator>();
 
         EventManager.current.OnAttack += Current_OnAttack;
     }
@@ -62,6 +68,7 @@ public class AnimalHandler : MonoBehaviour
                 timer -= timerInterval;
                 //invoke attack event
                 EventManager.current.InvokeAttack(this, new EventManager.OnAttackEventArgs { attackedName = targetEnemy.name, attackerName = this.name, damageDealt = this.attack });
+                animator.Play("Attack");
             }
             timer += (speed + 10) * Time.deltaTime;
         }
@@ -74,6 +81,12 @@ public class AnimalHandler : MonoBehaviour
         {
             uiElement = this.transform.root.gameObject.GetComponentInChildren<AttachUIElements>();
             uiElement.UpdateText(health.ToString() + "/" + maxHealth.ToString());
+        }
+
+        //check if the animator is done with the dying animation
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("DestroyState"))
+        {
+            Destroy(this.transform.root.gameObject);
         }
     }
 
@@ -146,6 +159,7 @@ public class AnimalHandler : MonoBehaviour
         else
         {
             //trigger damage animation if not dead
+            animator.Play("Damage");
         }
     }
 
@@ -154,8 +168,7 @@ public class AnimalHandler : MonoBehaviour
         EventManager.current.OnAttack -= Current_OnAttack;
         //Debug.Log("I " + this.animalData.name + " have died: " + health);
         targetEnemy = null;
-        //do death animation
-        Destroy(this.transform.root.gameObject);
+        animator.Play("Die");
     }
 
 }
