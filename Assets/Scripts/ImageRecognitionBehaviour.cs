@@ -8,23 +8,17 @@ public class ImageRecognitionBehaviour : MonoBehaviour
 {
 
     private ARTrackedImageManager arTrackedImageManager;
+    private ARSessionOrigin aRSessionOrigin;
 
     [SerializeField]
-    private GameObject[] objectsToPlace;
+    private GameObject[] arCreaturesToPlace;
 
     private Dictionary<string, GameObject> imageObjects = new Dictionary<string, GameObject>();
 
     private void Awake()
     {
         arTrackedImageManager = FindObjectOfType<ARTrackedImageManager>();
-
-        foreach (var placeObject in objectsToPlace)
-        {
-            GameObject newObject = Instantiate(placeObject, Vector3.zero, Quaternion.identity);
-            newObject.name = placeObject.name;
-            newObject.SetActive(false);
-            imageObjects.Add(newObject.name, newObject);
-        }
+        aRSessionOrigin = FindObjectOfType<ARSessionOrigin>();
     }
 
     public void OnEnable()
@@ -43,13 +37,24 @@ public class ImageRecognitionBehaviour : MonoBehaviour
         //What to do for images newly found
         foreach (var trackedImage in args.added)
         {
-            //make sure we've got images to track
-            if (imageObjects != null)
+            foreach (var creature in arCreaturesToPlace)
             {
-                Debug.Log("DEBUG: Image: " + trackedImage.name);
-                imageObjects[trackedImage.referenceImage.name].SetActive(true);
-                imageObjects[trackedImage.referenceImage.name].transform.position = trackedImage.transform.position;
-                //imageObjects[trackedImage.name].transform.rotation = trackedImage.transform.rotation;
+                Debug.Log("DEBUG: Found: " + creature.name);
+                var animalHandler = creature.GetComponent<AnimalHandler>();
+                if (animalHandler != null)
+                {
+                    if (animalHandler.animalData.imageName == trackedImage.referenceImage.name)
+                    {
+                        GameObject newObject = Instantiate(creature, trackedImage.transform.position, trackedImage.transform.rotation);
+                        newObject.name = animalHandler.animalData.name;
+                        newObject.SetActive(true);
+                        imageObjects.Add(animalHandler.animalData.imageName, newObject);
+                    }
+                }
+                else if(Debug.isDebugBuild)
+                {
+                    Debug.Log("DEBUG: Object doesn't have Animal Handler Component");
+                }
             }
         }
 
@@ -59,8 +64,10 @@ public class ImageRecognitionBehaviour : MonoBehaviour
             //make sure we've got images to track
             if (imageObjects != null)
             {
+                //move found image to image position and rotation
                 imageObjects[trackedImage.referenceImage.name].SetActive(true);
                 imageObjects[trackedImage.referenceImage.name].transform.position = trackedImage.transform.position;
+                imageObjects[trackedImage.referenceImage.name].transform.rotation = trackedImage.transform.rotation;
             }
         }
 
@@ -68,6 +75,7 @@ public class ImageRecognitionBehaviour : MonoBehaviour
         foreach (var trackedImage in args.removed)
         {
             //do nothing for now, let object exist where it was last detected
+            //if we care about what is and isn't being actively tracked, we could disable lost images
         }
     }
 

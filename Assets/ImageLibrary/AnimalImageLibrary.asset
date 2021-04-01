@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848409ee8ba454f42a5ddff137688a27, type: 3}
+  m_Name: AnimalImageLibrary
+  m_EditorClassIdentifier: 
+  m_GuidLow: 4830190577265334327
+  m_GuidHigh: 14503576824755014274
+  m_Images:
+  - m_SerializedGuid:
+      m_GuidLow: 5717567870337228459
+      m_GuidHigh: 7700692827521430164
+    m_SerializedTextureGuid:
+      m_GuidLow: 8756255471380221377
+      m_GuidHigh: 11791872051314935194
+    m_Size: {x: 0.1, y: 0.1}
+    m_SpecifySize: 1
+    m_Name: Cow
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5071808721875068416
+      m_GuidHigh: 104026047113851781
+    m_SerializedTextureGuid:
+      m_GuidLow: 636268912249917256
+      m_GuidHigh: 12232665958709356954
+    m_Size: {x: 0.1, y: 0.1}
+    m_SpecifySize: 1
+    m_Name: Bear
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5264110259176970271
+      m_GuidHigh: 9614884595930116757
+    m_SerializedTextureGuid:
+      m_GuidLow: 6680159627507736322
+      m_GuidHigh: 15403302368869134441
+    m_Size: {x: 0.1, y: 0.1}
+    m_SpecifySize: 1
+    m_Name: Deer
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5118411537857818444
+      m_GuidHigh: 8813959107086754
+    m_SerializedTextureGuid:
+      m_GuidLow: 7022305672644786600
+      m_GuidHigh: 4285388369722273835
+    m_Size: {x: 0.1, y: 0.1}
+    m_SpecifySize: 1
+    m_Name: Lion
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5554496099553482001
+      m_GuidHigh: 11972906993246626437
+    m_SerializedTextureGuid:
+      m_GuidLow: 12597854318070358401
+      m_GuidHigh: 15370121338417832138
+    m_Size: {x: 0.1, y: 0.1}
+    m_SpecifySize: 1
+    m_Name: Zebra
+    m_Texture: {fileID: 0}
