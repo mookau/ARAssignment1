@@ -253,7 +253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animalData: {fileID: 11400000, guid: 050de1d02c73e064492f7258992a2a78, type: 2}
-  timerInterval: 50
+  targetEnemy: {fileID: 0}
 --- !u!135 &1427164266426473615
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -262,7 +262,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1204339024597804}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5

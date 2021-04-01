@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class AnimalHandler : MonoBehaviour
 {
-    public AnimalData animalData;
+    public AnimalData animalData;    
 
-    public event EventHandler<OnAttackEventArgs> OnAttack;
+    //public event EventHandler<OnAttackEventArgs> OnAttack;
     [SerializeField]
     private AnimalHandler targetEnemy;
 
@@ -33,6 +33,21 @@ public class AnimalHandler : MonoBehaviour
         armor = animalData.armor;
         speed = animalData.speed;
         targetEnemy = null;
+
+        EventManager.current.OnAttack += Current_OnAttack;
+    }
+
+    private void Current_OnAttack(object sender, EventManager.OnAttackEventArgs e)
+    {
+        //check if we are currently in an encounter, and that our enemy is the sender
+        if (targetEnemy != null && e.attackerName == targetEnemy.name)
+        {
+            //double check that we are the correct target
+            if (e.attackedName == name)
+            {
+                TakeDamage(e.damageDealt);
+            }
+        }
     }
 
     // Update is called once per frame
@@ -45,7 +60,8 @@ public class AnimalHandler : MonoBehaviour
             {
                 Debug.Log("timer triggered");
                 timer -= timerInterval;
-                OnAttack?.Invoke(this, new OnAttackEventArgs { damageDealt = this.attack });
+                //invoke attack event
+                EventManager.current.InvokeAttack(this, new EventManager.OnAttackEventArgs { attackedName = targetEnemy.name, attackerName = this.name, damageDealt = this.attack });
             }
             timer += (speed + 10) * Time.deltaTime;
         }
@@ -65,27 +81,58 @@ public class AnimalHandler : MonoBehaviour
             {
                 Debug.Log("I " + this.animalData.name + " see other creature: " + other.name + " is animal");
                 targetEnemy = otherAnimal;
-                OnAttack += otherAnimal.AnimalHandler_OnAttacked;
+                //add other animals attacked function to event (this is bad behaviour)
+                //OnAttack += otherAnimal.AnimalHandler_OnAttacked;
             }
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        Debug.Log("I " + this.animalData.name + " have lost sight of: " + other.name);
+        if (targetEnemy != null)
+        {
+            var otherAnimal = other.gameObject.GetComponent<AnimalHandler>();
+            if (otherAnimal == targetEnemy)
+            {
+                Debug.Log("I " + this.animalData.name + " will stop fighting other creature: " + other.name);
+                targetEnemy = null;
+                //add other animals attacked function to event (this is bad behaviour)
+                //OnAttack += otherAnimal.AnimalHandler_OnAttacked;
+            }
+        }
+    }
+
+    /*
     private void AnimalHandler_OnAttacked(object sender, OnAttackEventArgs e)
     {
         TakeDamage(e.damageDealt);
         if (health <= 0)
         {
             var aHandler = (AnimalHandler)sender;
-            OnAttack -= aHandler.AnimalHandler_OnAttacked;
+            //attempt to unsubscribe from event (this doesn't go so well either)
+            //OnAttack -= aHandler.AnimalHandler_OnAttacked;
             Deadded();
         }
     }
+    */
 
     private void TakeDamage(int damage)
     {
+        //reduce damage done by armor amount
         health -= (damage - armor);
+
         Debug.Log("I " + this.animalData.name + " have taken damage. Current health: " + health);
-        //trigger damage animation
+
+        //check if dead
+        if (health <= 0)
+        {
+            Deadded();
+        }
+        else
+        {
+            //trigger damage animation if not dead
+        }
     }
 
     private void Deadded()
@@ -96,8 +143,10 @@ public class AnimalHandler : MonoBehaviour
         Destroy(this.transform.root.gameObject);
     }
 
+    /*
     public class OnAttackEventArgs : EventArgs
     {
         public int damageDealt;
     }
+    */
 }
