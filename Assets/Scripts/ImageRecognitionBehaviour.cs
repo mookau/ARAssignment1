@@ -20,6 +20,23 @@ public class ImageRecognitionBehaviour : MonoBehaviour
         arTrackedImageManager = FindObjectOfType<ARTrackedImageManager>();
         aRSessionOrigin = FindObjectOfType<ARSessionOrigin>();
 
+        foreach (var creature in arCreaturesToPlace)
+        {
+            if (creature != null)
+            {
+                //Debug.Log("//Debug: Found: " + creature.name);
+                var animalHandler = creature.GetComponent<AnimalHandler>();
+                if (animalHandler != null)
+                {
+                    GameObject newObject = Instantiate(creature);
+                    newObject.name = animalHandler.animalData.name;
+                    newObject.SetActive(false);
+                    imageObjects.Add(animalHandler.animalData.imageName, newObject);
+
+                }
+
+            }
+        }
     }
 
     public void OnEnable()
@@ -38,27 +55,43 @@ public class ImageRecognitionBehaviour : MonoBehaviour
         //What to do for images newly found
         foreach (var trackedImage in args.added)
         {
+            //make sure we've got images to track
+            if (imageObjects != null)
+            {
+                if (imageObjects[trackedImage.referenceImage.name] != null)
+                {
+                    //move found image to image position and rotation
+                    imageObjects[trackedImage.referenceImage.name].SetActive(true);
+                    imageObjects[trackedImage.referenceImage.name].transform.position = trackedImage.transform.position;
+                    imageObjects[trackedImage.referenceImage.name].transform.rotation = trackedImage.transform.rotation;
+                }
+            }
+
+            /*
             foreach (var creature in arCreaturesToPlace)
             {
-                //Debug.Log("//Debug: Found: " + creature.name);
-                var animalHandler = creature.GetComponent<AnimalHandler>();
-                if (animalHandler != null)
+                if (creature != null)
                 {
-                    if (animalHandler.animalData.imageName == trackedImage.referenceImage.name)
+                    //Debug.Log("//Debug: Found: " + creature.name);
+                    var animalHandler = creature.GetComponent<AnimalHandler>();
+                    if (animalHandler != null)
                     {
-                        GameObject newObject = Instantiate(creature, trackedImage.transform.position, trackedImage.transform.rotation);
-                        newObject.name = animalHandler.animalData.name;
-                        newObject.SetActive(true);
-                        imageObjects.Add(animalHandler.animalData.imageName, newObject);
+                        if (animalHandler.animalData.imageName == trackedImage.referenceImage.name)
+                        {
+                            GameObject newObject = Instantiate(creature, trackedImage.transform.position, trackedImage.transform.rotation);
+                            newObject.name = animalHandler.animalData.name;
+                            newObject.SetActive(true);
+                            imageObjects.Add(animalHandler.animalData.imageName, newObject);
+                        }
                     }
+                    else if(Debug.isDebugBuild)
+                    {
+                        Debug.Log("//Debug: Object doesn't have Animal Handler Component");
+                    }
+                    
                 }
-                /*
-                else if(Debug.isDebugBuild)
-                {
-                    Debug.Log("//Debug: Object doesn't have Animal Handler Component");
-                }
-                */
             }
+            */
         }
 
         //what to do for images that have been updated (position)
@@ -67,10 +100,13 @@ public class ImageRecognitionBehaviour : MonoBehaviour
             //make sure we've got images to track
             if (imageObjects != null)
             {
-                //move found image to image position and rotation
-                //imageObjects[trackedImage.referenceImage.name].SetActive(true);
-                imageObjects[trackedImage.referenceImage.name].transform.position = trackedImage.transform.position;
-                imageObjects[trackedImage.referenceImage.name].transform.rotation = trackedImage.transform.rotation;
+                if (imageObjects[trackedImage.referenceImage.name] != null)
+                {
+                    //move found image to image position and rotation
+                    imageObjects[trackedImage.referenceImage.name].SetActive(true);
+                    imageObjects[trackedImage.referenceImage.name].transform.position = trackedImage.transform.position;
+                    imageObjects[trackedImage.referenceImage.name].transform.rotation = trackedImage.transform.rotation;
+                }
             }
         }
 

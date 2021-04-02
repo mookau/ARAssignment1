@@ -66,42 +66,49 @@ public class AnimalHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (targetEnemy != null)
+        //if I'm not scheduled for destruction, do regular update
+        if (!destroyMe)
         {
-            if (modelTransform != null)
+            if (targetEnemy != null)
             {
-                modelTransform.LookAt(targetEnemy.transform.position, this.transform.root.transform.up);
+                if (modelTransform != null)
+                {
+                    modelTransform.LookAt(targetEnemy.transform.position, this.transform.root.transform.up);
+                }
+                //Debug.Log("timer:  " + timer);
+                if (timer > timerInterval)
+                {
+                    timer -= timerInterval;
+                    //invoke attack event
+                    EventManager.current.InvokeAttack(this, new EventManager.OnAttackEventArgs { attackedName = targetEnemy.name, attackerName = this.name, damageDealt = this.attack });
+
+                    //we have attempted to attack, play attack animation (TODO: check that we are actively engaged in a combat before animation, and not just attempting one)
+                    animator.Play("Attack");
+                }
+                timer += (speed + 10) * Time.deltaTime;
             }
-            //Debug.Log("timer:  " + timer);
-            if (timer > timerInterval)
+            else
             {
-                timer -= timerInterval;
-                //invoke attack event
-                EventManager.current.InvokeAttack(this, new EventManager.OnAttackEventArgs { attackedName = targetEnemy.name, attackerName = this.name, damageDealt = this.attack });
-
-                //we have attempted to attack, play attack animation (TODO: check that we are actively engaged in a combat before animation, and not just attempting one)
-                animator.Play("Attack");
+                if (modelTransform != null)
+                {
+                    modelTransform.localPosition = Vector3.zero;
+                    modelTransform.localRotation = Quaternion.identity;
+                }
+                timer = 0f;
             }
-            timer += (speed + 10) * Time.deltaTime;
-        }
-        else
-        {
-            if (modelTransform != null)
+
+            try
             {
-                modelTransform.localPosition = Vector3.zero;
-                modelTransform.localRotation = Quaternion.identity;
+                uiElement = this.transform.root.gameObject.GetComponentInChildren<AttachUIElements>();
+                uiElement.UpdateText(health.ToString() + "/" + maxHealth.ToString());
             }
-            timer = 0f;
-        }
-
-        if (uiElement == null)
-        {
-            uiElement = this.transform.root.gameObject.GetComponentInChildren<AttachUIElements>();
-            uiElement.UpdateText(health.ToString() + "/" + maxHealth.ToString());
-        }
-
+            catch
+            {
+                //shhhh, go away Rick, nothing to see here
+            }            
+        }        
         //check if the animator is done with the dying animation
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("DestroyState"))
+        else if (animator.GetCurrentAnimatorStateInfo(0).IsName("DestroyState"))
         {
             Destroy(this.transform.root.gameObject);
         }
@@ -186,6 +193,7 @@ public class AnimalHandler : MonoBehaviour
         //Debug.Log("I " + this.animalData.name + " have died: " + health);
         targetEnemy = null;
         animator.Play("Die");
+        destroyMe = true;
     }
 
 }
