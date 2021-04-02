@@ -14,6 +14,7 @@ public class AnimalHandler : MonoBehaviour
     private Animator animator;
 
     private AttachUIElements uiElement;
+    private Transform modelTransform;
 
     private bool destroyMe = false;
 
@@ -40,21 +41,26 @@ public class AnimalHandler : MonoBehaviour
         targetEnemy = null;
 
         animator = gameObject.GetComponent<Animator>();
+        modelTransform = gameObject.transform.Find("Model");
 
         EventManager.current.OnAttack += Current_OnAttack;
     }
 
     private void Current_OnAttack(object sender, EventManager.OnAttackEventArgs e)
     {
-        //check if we are currently in an encounter, and that our enemy is the sender
-        if (targetEnemy != null && e.attackerName == targetEnemy.name)
+        if (targetEnemy != null)
         {
-            //double check that we are the correct target
-            if (e.attackedName == name)
+            //check if we are currently in an encounter, and that our enemy is the sender
+            if (e.attackerName == targetEnemy.name)
             {
-                TakeDamage(e.damageDealt);
+                //double check that we are the correct target
+                if (e.attackedName == name)
+                {
+                    TakeDamage(e.damageDealt);
+                }
             }
         }
+
     }
 
     // Update is called once per frame
@@ -62,18 +68,29 @@ public class AnimalHandler : MonoBehaviour
     {
         if (targetEnemy != null)
         {
+            if (modelTransform != null)
+            {
+                modelTransform.LookAt(targetEnemy.transform.position, this.transform.root.transform.up);
+            }
             //Debug.Log("timer:  " + timer);
             if (timer > timerInterval)
             {
                 timer -= timerInterval;
                 //invoke attack event
                 EventManager.current.InvokeAttack(this, new EventManager.OnAttackEventArgs { attackedName = targetEnemy.name, attackerName = this.name, damageDealt = this.attack });
+
+                //we have attempted to attack, play attack animation (TODO: check that we are actively engaged in a combat before animation, and not just attempting one)
                 animator.Play("Attack");
             }
             timer += (speed + 10) * Time.deltaTime;
         }
         else
         {
+            if (modelTransform != null)
+            {
+                modelTransform.localPosition = Vector3.zero;
+                modelTransform.localRotation = Quaternion.identity;
+            }
             timer = 0f;
         }
 

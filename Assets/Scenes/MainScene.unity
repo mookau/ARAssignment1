@@ -599,8 +599,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arCreaturesToPlace:
-  - {fileID: 1860942571928548, guid: 51c8412d4f11e1a458dca877ab0373cf, type: 3}
-  - {fileID: 1773770337617278, guid: e91935e912725f9499883a659a707a1c, type: 3}
-  - {fileID: 1204339024597804, guid: fe8ae87b18c5c0646a9bbb200cf7875e, type: 3}
-  - {fileID: 1982413206385478, guid: 21cded1e5b1f7ce44af6ee2b49f29377, type: 3}
-  - {fileID: 1211756940889422, guid: 70384afef9c1c0f42b14deb75fc7c5b0, type: 3}
+  - {fileID: 5655728088212186243, guid: 1b001274b5729ef449ca2bb931523629, type: 3}
+  - {fileID: 311053373292365317, guid: 2ddeb63c12fbc154396d68c4a2faa6e2, type: 3}
+  - {fileID: 6436801246460975740, guid: 8642e9598addef249ad5ad71e31c0055, type: 3}
+  - {fileID: 4305861273938041201, guid: 93bf580238616bb42b1280e41b45bd71, type: 3}
+  - {fileID: 2270140239754768732, guid: 5b99c72ced567734aaea589bc85ababe, type: 3}

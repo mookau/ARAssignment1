@@ -68,7 +68,7 @@ public class ImageRecognitionBehaviour : MonoBehaviour
             if (imageObjects != null)
             {
                 //move found image to image position and rotation
-                imageObjects[trackedImage.referenceImage.name].SetActive(true);
+                //imageObjects[trackedImage.referenceImage.name].SetActive(true);
                 imageObjects[trackedImage.referenceImage.name].transform.position = trackedImage.transform.position;
                 imageObjects[trackedImage.referenceImage.name].transform.rotation = trackedImage.transform.rotation;
             }
